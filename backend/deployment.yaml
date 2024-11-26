@@ -1,0 +1,4 @@
+build:
+  command: bash build.sh
+run:
+  command: uvicorn main:app --host 0.0.0.0 --port $PORT
