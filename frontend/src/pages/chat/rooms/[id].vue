@@ -177,8 +177,6 @@ function closeConnection() {
 
 function onMessageReceived(event: any){
   const data = JSON.parse(event.data);
-  console.log(data.message);
-
   messages.value?.push(transformMessage(data.message))
   scrollDown();
 }

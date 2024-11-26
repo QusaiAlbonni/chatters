@@ -9,5 +9,15 @@ const axiosInstance = axios.create({
   },
 });
 
+axiosInstance.interceptors.response.use(
+  response => {
+    return response;
+  },
+  error => {
+    console.error("an Error occured");
+    localStorage.removeItem("authToken");
+    window.location.href = '/login'
+  }
+)
 
 export default axiosInstance;
