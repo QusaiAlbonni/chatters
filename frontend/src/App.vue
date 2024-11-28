@@ -28,7 +28,7 @@ function isSignUp(){
 
 function redirectIfNotLoggedIn() {
   if (!authStore.isAuthenticated() && !isSignUp()) {
-
+    redirectToLogin();
   }
 };
 

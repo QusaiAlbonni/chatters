@@ -214,7 +214,7 @@ onMounted(initChat)
 
 watch(() => {
   if ('id' in route.params)
-    route.params.id
+    return route.params.id
 },
   async () => {
     await closeConnection();
