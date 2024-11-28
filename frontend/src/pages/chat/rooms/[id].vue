@@ -11,8 +11,7 @@
             <v-col cols="12" :class="('d-flex px-0 ' + (message.isOwned(user?.id) ? 'justify-end' : 'justify-start'))"
               style="padding: 0px;">
               <v-avatar :image="showMessage(message, index) ? message.user?.avatar : ''"
-                :class="['mx-2', message.isOwned(user?.id) ? 'order-2' : 'order-1', ]"
-                ></v-avatar>
+                :class="['mx-2', message.isOwned(user?.id) ? 'order-2' : 'order-1',]"></v-avatar>
 
               <v-card :color="message.isOwned(user?.id) ? 'light-blue-darken-3' : 'dark'"
                 :class="['text-color-white', mdAndDown ? 'mobile-card' : 'desktop-card', message.isOwned(user?.id) ? 'order-1' : 'order-2']">
@@ -36,7 +35,7 @@
 
     <v-row :class="['message-field', 'position-fixed', 'bg-grey-darken-4', mdAndDown ? 'w-100' : 'w-75']">
       <v-form class="w-100 d-flex justify-between" @submit.prevent="sendMessage()">
-        <v-text-field v-model="messageContent" label="Type a message" hint="Press Enter to send"  varient="flat"
+        <v-text-field v-model="messageContent" label="Type a message" hint="Press Enter to send" varient="flat"
           class="p-12" />
         <v-btn icon="mdi-send" class="mx-1" type="submit"></v-btn>
       </v-form>
@@ -81,7 +80,6 @@ import { useWebSocketStore } from '@/stores/websocket';
 import { useAppStore } from '@/stores/app';
 import { ExpandableMessage } from '@/types/message';
 import { useDisplay } from 'vuetify';
-import LoadingSpinner from '@/components/LoadingSpinner.vue';
 
 const route = useRoute();
 const apiStore = useApiStore();
@@ -143,7 +141,7 @@ function transformMessages(messages: Message[]): ExpandableMessage[] {
 }
 
 function showMessage(message: ExpandableMessage, index: number): boolean {
-  return ((index === 0 ) || (messages.value[index - 1].user?.id !== message.user?.id));
+  return ((index === 0) || (messages.value[index - 1].user?.id !== message.user?.id));
 }
 
 async function scrollDown() {
@@ -175,14 +173,14 @@ function closeConnection() {
     socket.value.close();
 }
 
-function onMessageReceived(event: any){
+function onMessageReceived(event: any) {
   const data = JSON.parse(event.data);
   messages.value?.push(transformMessage(data.message))
   scrollDown();
 }
 
-function sendMessage(){
-  socket.value.send(JSON.stringify({message: messageContent.value}));
+function sendMessage() {
+  socket.value.send(JSON.stringify({ message: messageContent.value }));
   messageContent.value = "";
 }
 
@@ -214,8 +212,12 @@ async function initChat() {
 
 onMounted(initChat)
 
-watch(() => route.params.id, async () => {
-  await closeConnection();
-  await initChat();
-})
+watch(() => {
+  if ('id' in route.params)
+    route.params.id
+},
+  async () => {
+    await closeConnection();
+    await initChat();
+  })
 </script>

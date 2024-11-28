@@ -14,9 +14,11 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   error => {
-    console.error("an Error occured");
-    localStorage.removeItem("authToken");
-    window.location.href = '/login'
+    if (error.status === 401){
+      localStorage.removeItem("authToken");
+      window.location.href = '/login';
+    }
+    throw error;
   }
 )
 

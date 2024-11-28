@@ -166,6 +166,7 @@ AUTH_USER_MODEL = 'users.User'
 DJOSER = {
     'SERIALIZERS': {
         'user': 'users.serializers.UserSerializer',
+        'user_create': 'users.serializers.UserCreateSerializer',
     }
 }
 AWS_ACCESS_KEY_ID = env("AWS_ACCESS_KEY_ID")

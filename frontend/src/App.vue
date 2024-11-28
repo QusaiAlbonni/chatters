@@ -10,22 +10,25 @@
 
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useRoute } from 'vue-router';
 
 const authStore = useAuthStore();
 
 const router = useRouter();
 
+const route = useRoute();
+
 function redirectToLogin() {
   router.push('/login');
 };
 
-function redirectToChat() {
-  router.push('/chat');
+function isSignUp(){
+  return window.location.pathname == "/signup"
 }
 
 function redirectIfNotLoggedIn() {
-  if (!authStore.isAuthenticated()) {
-    redirectToLogin();
+  if (!authStore.isAuthenticated() && !isSignUp()) {
+
   }
 };
 

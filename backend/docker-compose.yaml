@@ -1,0 +1,14 @@
+services:
+  django:
+    build:
+      context: .
+      dockerfile: ./DockerFile
+    ports:
+      - "8000:8000"
+    volumes:
+      - .:/app:z
+    environment:
+      - DEBUG=on
+      - SECRET_KEY=rs_pyjzu7oeg%-0b@lhu1q@u2g21m7k0ob*y@9x+n!k&1q#=3t
+      - DATABASE_URL=sqlite:///db.sqlite3
+      - CACHE_URL=redis://localhost:6379/0

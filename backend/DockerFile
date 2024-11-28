@@ -1,0 +1,21 @@
+# Use an official Python runtime as a base image
+FROM python:3.11-slim
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt .
+
+RUN apt-get update && apt-get install -y libpq-dev
+
+RUN pip install -r requirements.txt
+
+# Copy project files into the container
+COPY . .
+
+# Expose the port your ASGI server will use
+EXPOSE 8000
+
+# Define the default command to run your ASGI server
+CMD ["uvicorn", "chatters.asgi:application", "--host", "0.0.0.0", "--port", "8000"]
