@@ -82,7 +82,7 @@ const terms = ref(false)
 
 const avatar: Ref<File | null> = ref(null)
 
-const avatarUrl: Ref<string> = ref("/src/assets/logo.svg")
+const avatarUrl: Ref<string> = ref("/logo.svg")
 
 function togglePasswordVisibility() {
   passwordVisible.value = !passwordVisible.value;

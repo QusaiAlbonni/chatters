@@ -30,15 +30,14 @@
             <!--checkbox-->
             <v-checkbox v-model="terms" color="secondary" label="I agree to site terms and conditions"></v-checkbox>
 
+            <div class="mx-2"><span>
+                <a href="/signup" class="text-caption" style="text-decoration: none;">Don't have an account? Sign-Up</a>
+              </span></div>
+
             <!--Submit-->
             <v-btn class="ml-2" type="submit" :disabled="!enabledButton" color="primary">
               Login
             </v-btn>
-
-
-            <div class="mx-2 my-2"><span>
-              <a :onclick="redirect" style="text-decoration: none;">Don't have an account? Sign-Up</a>
-            </span></div>
           </v-card>
         </v-col>
       </v-row>
@@ -85,9 +84,6 @@ async function login() {
     enabledButton.value = true;
   }
 
-}
-function redirect(){
-  router.push('/signup')
 }
 
 function togglePasswordVisibility() {
