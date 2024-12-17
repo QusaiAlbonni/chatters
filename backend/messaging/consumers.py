@@ -75,7 +75,16 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         if (message['language'] != self.language) and self.language and not (message['user']['id'] == self.user.id):
             print(message)
             user = await User.objects.aget(pk=message['user']['id'])
-            message_obj = Message(id= message['pk'],user=user, room=self.room, content=message['content'], language=message['language'])
+            message_obj = Message(
+                id= message['pk'],
+                user=user,
+                room=self.room,
+                content=message['content'],
+                language=message['language'],
+                translations=message['translations'],
+                created_at=message['created_at'],
+                modified_at=message['modified_at']
+            )
             message_obj.user= user
             message_obj = await self.translate_service.translate_message_in_room(room=self.room, message=message_obj, to=self.language)
             message['translations'] = message_obj.translations
