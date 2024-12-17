@@ -22,6 +22,8 @@ class Message(models.Model):
         
     translations= models.JSONField(_("Translations"), default=dict)
     
+    language= models.CharField(_("Content Language"), max_length=31)
+    
     created_at= models.DateTimeField(_("Created At"), auto_now=False, auto_now_add=True)
     modified_at = models.DateTimeField(_("Modified At"), auto_now=True, auto_now_add=False)
 

@@ -8,6 +8,8 @@ class MessageSerializer(serializers.ModelSerializer):
         fields = [
             'pk',
             'content',
+            'language',
+            'translations',
             'user',
             'room',
             'created_at',

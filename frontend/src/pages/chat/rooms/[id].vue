@@ -7,7 +7,7 @@
     <v-row>
       <v-col style="padding: 0">
         <v-list :class="['bg-transparent', mdAndUp ? 'px-12' : '']">
-          <v-list-item v-for="[index, message] of messages?.entries()" class="px-2">
+          <v-list-item v-for="[index, message] of messages?.entries()" :key="message.pk" class="px-2">
             <v-col cols="12" :class="('d-flex px-0 ' + (message.isOwned(user?.id) ? 'justify-end' : 'justify-start'))"
               style="padding: 0px;">
               <v-avatar :image="showMessage(message, index) ? message.user?.avatar : ''"
@@ -17,7 +17,7 @@
                 :class="['text-color-white', mdAndDown ? 'mobile-card' : 'desktop-card', message.isOwned(user?.id) ? 'order-1' : 'order-2']">
                 <v-card-text style="padding: 10px; padding-bottom: 0; padding-top: 5px;">
                   <div :class="{ 'truncate': !message.expanded }">
-                    {{ message.content }}
+                    {{ message.translatedContent }}
                   </div>
                   <v-btn v-if="isMessageLong(message)" variant="plain" size="x-small" density="compact"
                     class="text-caption mt-1 pa-0 pb-3" @click="toggleMessage(message)">
@@ -115,11 +115,11 @@ function toggleMessage(message: any) {
   message.expanded = !message.expanded;
 }
 
-function isMessageLong(message: Message): boolean {
-  return message.content.length > 100;
+function isMessageLong(message: ExpandableMessage): boolean {
+  return message.translatedContent.length > 100;
 }
 
-function transformMessage(message: Message): ExpandableMessage {
+function transformMessage(message: any): ExpandableMessage {
   return new ExpandableMessage(
     message.content,
     message.pk,
@@ -128,6 +128,8 @@ function transformMessage(message: Message): ExpandableMessage {
     message.created_at,
     message.modified_at,
     false,
+    message.language,
+    message.translations
   );
 }
 
@@ -182,6 +184,10 @@ function onMessageReceived(event: any) {
 function sendMessage() {
   socket.value.send(JSON.stringify({ message: messageContent.value }));
   messageContent.value = "";
+}
+
+async function deleteMessage(){
+
 }
 
 async function initChat() {

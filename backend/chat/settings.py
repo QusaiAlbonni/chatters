@@ -14,6 +14,10 @@ from pathlib import Path
 import os
 import environ
 
+from chatfusion import configure
+
+import sentry_sdk
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -205,3 +209,17 @@ if not DEBUG:
         },
 
     }
+    
+    
+LLM_MODEL_NAME = env("LLM_MODEL_NAME")
+OPENAI_KEY= env("OPENAI_KEY")
+
+configure(openai_api_key=OPENAI_KEY, gemini_api_key=env('GEMINI_KEY'))
+
+
+SUPPORTED_LANGUAGES = ('en', 'nl', 'de', 'ar', 'jp', None)
+
+
+sentry_sdk.init(
+    dsn=env("SENTRY_DSN"),
+)

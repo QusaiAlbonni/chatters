@@ -16,6 +16,15 @@ export const useApiStore =  defineStore('api', () => {
     return messages;
   };
 
+  const deleteMessage = async (roomId: string, messageId: string): Promise<void> => {
+    let response = await chatApi.chatRoomsMessagesDelete(roomId, parseInt(messageId));
+  };
+
+  const editMessage = async (roomId: string, messageId: string, content: string): Promise<Message> => {
+    let response = await chatApi.chatRoomsMessagesPartialUpdate(roomId, parseInt(messageId), {content: content});
+
+    return response.data
+  }
   const getUser = async () : Promise<User> => {
     return (await userApi.usersMeRead()).data;
   };
@@ -28,6 +37,8 @@ export const useApiStore =  defineStore('api', () => {
     fetchRooms,
     fetchMessages,
     getUser,
-    getRoom
+    getRoom,
+    deleteMessage,
+    editMessage
   };
 });
