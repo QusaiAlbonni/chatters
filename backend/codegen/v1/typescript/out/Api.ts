@@ -45,6 +45,31 @@ export interface Activation {
 /**
  * 
  * @export
+ * @interface Language
+ */
+export interface Language {
+    /**
+     * 
+     * @type {number}
+     * @memberof Language
+     */
+    'pk'?: number;
+    /**
+     * 
+     * @type {string}
+     * @memberof Language
+     */
+    'code': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Language
+     */
+    'name': string;
+}
+/**
+ * 
+ * @export
  * @interface Message
  */
 export interface Message {
@@ -60,6 +85,18 @@ export interface Message {
      * @memberof Message
      */
     'content': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof Message
+     */
+    'language': string;
+    /**
+     * 
+     * @type {object}
+     * @memberof Message
+     */
+    'translations'?: object;
     /**
      * 
      * @type {Users}
@@ -254,6 +291,12 @@ export interface UserCreate {
      * @memberof UserCreate
      */
     'password': string;
+    /**
+     * 
+     * @type {string}
+     * @memberof UserCreate
+     */
+    'avatar'?: string | null;
 }
 /**
  * 
@@ -308,14 +351,11 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
     return {
         /**
          * 
-         * @param {Room} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        chatRoomsCreate: async (data: Room, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('chatRoomsCreate', 'data', data)
-            const localVarPath = `/chat/rooms/`;
+        chatLanguagesList: async (options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+            const localVarPath = `/chat/languages/`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -323,7 +363,7 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -333,12 +373,9 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
 
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -351,10 +388,10 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        chatRoomsDelete: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
+        chatLanguagesRead: async (id: number, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
             // verify required parameter 'id' is not null or undefined
-            assertParamExists('chatRoomsDelete', 'id', id)
-            const localVarPath = `/chat/rooms/{id}/`
+            assertParamExists('chatLanguagesRead', 'id', id)
+            const localVarPath = `/chat/languages/{id}/`
                 .replace(`{${"id"}}`, encodeURIComponent(String(id)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -363,7 +400,7 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -674,49 +711,6 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @param {number} id A unique integer value identifying this room.
-         * @param {Room} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        chatRoomsPartialUpdate: async (id: number, data: Room, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('chatRoomsPartialUpdate', 'id', id)
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('chatRoomsPartialUpdate', 'data', data)
-            const localVarPath = `/chat/rooms/{id}/`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PATCH', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Basic required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
-        /**
-         * 
-         * @param {number} id A unique integer value identifying this room.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -751,49 +745,6 @@ export const ChatApiAxiosParamCreator = function (configuration?: Configuration)
                 options: localVarRequestOptions,
             };
         },
-        /**
-         * 
-         * @param {number} id A unique integer value identifying this room.
-         * @param {Room} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        chatRoomsUpdate: async (id: number, data: Room, options: RawAxiosRequestConfig = {}): Promise<RequestArgs> => {
-            // verify required parameter 'id' is not null or undefined
-            assertParamExists('chatRoomsUpdate', 'id', id)
-            // verify required parameter 'data' is not null or undefined
-            assertParamExists('chatRoomsUpdate', 'data', data)
-            const localVarPath = `/chat/rooms/{id}/`
-                .replace(`{${"id"}}`, encodeURIComponent(String(id)));
-            // use dummy base URL string because the URL constructor only accepts absolute URLs.
-            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-            let baseOptions;
-            if (configuration) {
-                baseOptions = configuration.baseOptions;
-            }
-
-            const localVarRequestOptions = { method: 'PUT', ...baseOptions, ...options};
-            const localVarHeaderParameter = {} as any;
-            const localVarQueryParameter = {} as any;
-
-            // authentication Basic required
-            // http basic authentication required
-            setBasicAuthToObject(localVarRequestOptions, configuration)
-
-
-    
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
-            setSearchParams(localVarUrlObj, localVarQueryParameter);
-            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
-            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(data, localVarRequestOptions, configuration)
-
-            return {
-                url: toPathString(localVarUrlObj),
-                options: localVarRequestOptions,
-            };
-        },
     }
 };
 
@@ -806,14 +757,13 @@ export const ChatApiFp = function(configuration?: Configuration) {
     return {
         /**
          * 
-         * @param {Room} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async chatRoomsCreate(data: Room, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Room>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.chatRoomsCreate(data, options);
+        async chatLanguagesList(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<Language>>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.chatLanguagesList(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ChatApi.chatRoomsCreate']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ChatApi.chatLanguagesList']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -822,10 +772,10 @@ export const ChatApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async chatRoomsDelete(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.chatRoomsDelete(id, options);
+        async chatLanguagesRead(id: number, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Language>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.chatLanguagesRead(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ChatApi.chatRoomsDelete']?.[localVarOperationServerIndex]?.url;
+            const localVarOperationServerBasePath = operationServerMap['ChatApi.chatLanguagesRead']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
         /**
@@ -921,19 +871,6 @@ export const ChatApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @param {number} id A unique integer value identifying this room.
-         * @param {Room} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async chatRoomsPartialUpdate(id: number, data: Room, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Room>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.chatRoomsPartialUpdate(id, data, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ChatApi.chatRoomsPartialUpdate']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {number} id A unique integer value identifying this room.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
@@ -941,19 +878,6 @@ export const ChatApiFp = function(configuration?: Configuration) {
             const localVarAxiosArgs = await localVarAxiosParamCreator.chatRoomsRead(id, options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['ChatApi.chatRoomsRead']?.[localVarOperationServerIndex]?.url;
-            return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
-        },
-        /**
-         * 
-         * @param {number} id A unique integer value identifying this room.
-         * @param {Room} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        async chatRoomsUpdate(id: number, data: Room, options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Room>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.chatRoomsUpdate(id, data, options);
-            const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
-            const localVarOperationServerBasePath = operationServerMap['ChatApi.chatRoomsUpdate']?.[localVarOperationServerIndex]?.url;
             return (axios, basePath) => createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration)(axios, localVarOperationServerBasePath || basePath);
         },
     }
@@ -968,12 +892,11 @@ export const ChatApiFactory = function (configuration?: Configuration, basePath?
     return {
         /**
          * 
-         * @param {Room} data 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        chatRoomsCreate(data: Room, options?: RawAxiosRequestConfig): AxiosPromise<Room> {
-            return localVarFp.chatRoomsCreate(data, options).then((request) => request(axios, basePath));
+        chatLanguagesList(options?: RawAxiosRequestConfig): AxiosPromise<Array<Language>> {
+            return localVarFp.chatLanguagesList(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -981,8 +904,8 @@ export const ChatApiFactory = function (configuration?: Configuration, basePath?
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        chatRoomsDelete(id: number, options?: RawAxiosRequestConfig): AxiosPromise<void> {
-            return localVarFp.chatRoomsDelete(id, options).then((request) => request(axios, basePath));
+        chatLanguagesRead(id: number, options?: RawAxiosRequestConfig): AxiosPromise<Language> {
+            return localVarFp.chatLanguagesRead(id, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1056,31 +979,11 @@ export const ChatApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @param {number} id A unique integer value identifying this room.
-         * @param {Room} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        chatRoomsPartialUpdate(id: number, data: Room, options?: RawAxiosRequestConfig): AxiosPromise<Room> {
-            return localVarFp.chatRoomsPartialUpdate(id, data, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {number} id A unique integer value identifying this room.
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
         chatRoomsRead(id: number, options?: RawAxiosRequestConfig): AxiosPromise<Room> {
             return localVarFp.chatRoomsRead(id, options).then((request) => request(axios, basePath));
-        },
-        /**
-         * 
-         * @param {number} id A unique integer value identifying this room.
-         * @param {Room} data 
-         * @param {*} [options] Override http request option.
-         * @throws {RequiredError}
-         */
-        chatRoomsUpdate(id: number, data: Room, options?: RawAxiosRequestConfig): AxiosPromise<Room> {
-            return localVarFp.chatRoomsUpdate(id, data, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -1094,13 +997,12 @@ export const ChatApiFactory = function (configuration?: Configuration, basePath?
 export class ChatApi extends BaseAPI {
     /**
      * 
-     * @param {Room} data 
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChatApi
      */
-    public chatRoomsCreate(data: Room, options?: RawAxiosRequestConfig) {
-        return ChatApiFp(this.configuration).chatRoomsCreate(data, options).then((request) => request(this.axios, this.basePath));
+    public chatLanguagesList(options?: RawAxiosRequestConfig) {
+        return ChatApiFp(this.configuration).chatLanguagesList(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1110,8 +1012,8 @@ export class ChatApi extends BaseAPI {
      * @throws {RequiredError}
      * @memberof ChatApi
      */
-    public chatRoomsDelete(id: number, options?: RawAxiosRequestConfig) {
-        return ChatApiFp(this.configuration).chatRoomsDelete(id, options).then((request) => request(this.axios, this.basePath));
+    public chatLanguagesRead(id: number, options?: RawAxiosRequestConfig) {
+        return ChatApiFp(this.configuration).chatLanguagesRead(id, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -1200,36 +1102,12 @@ export class ChatApi extends BaseAPI {
     /**
      * 
      * @param {number} id A unique integer value identifying this room.
-     * @param {Room} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ChatApi
-     */
-    public chatRoomsPartialUpdate(id: number, data: Room, options?: RawAxiosRequestConfig) {
-        return ChatApiFp(this.configuration).chatRoomsPartialUpdate(id, data, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {number} id A unique integer value identifying this room.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof ChatApi
      */
     public chatRoomsRead(id: number, options?: RawAxiosRequestConfig) {
         return ChatApiFp(this.configuration).chatRoomsRead(id, options).then((request) => request(this.axios, this.basePath));
-    }
-
-    /**
-     * 
-     * @param {number} id A unique integer value identifying this room.
-     * @param {Room} data 
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     * @memberof ChatApi
-     */
-    public chatRoomsUpdate(id: number, data: Room, options?: RawAxiosRequestConfig) {
-        return ChatApiFp(this.configuration).chatRoomsUpdate(id, data, options).then((request) => request(this.axios, this.basePath));
     }
 }
 
@@ -2186,7 +2064,7 @@ export const UsersApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async usersMeRead(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>> {
+        async usersMeRead(options?: RawAxiosRequestConfig): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<User>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.usersMeRead(options);
             const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
             const localVarOperationServerBasePath = operationServerMap['UsersApi.usersMeRead']?.[localVarOperationServerIndex]?.url;
@@ -2393,7 +2271,7 @@ export const UsersApiFactory = function (configuration?: Configuration, basePath
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        usersMeRead(options?: RawAxiosRequestConfig): AxiosPromise<User> {
+        usersMeRead(options?: RawAxiosRequestConfig): AxiosPromise<Array<User>> {
             return localVarFp.usersMeRead(options).then((request) => request(axios, basePath));
         },
         /**

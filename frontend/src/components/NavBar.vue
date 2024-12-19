@@ -5,7 +5,7 @@
       <v-btn href="/" class="font-weight-bold px-0" density="comfortable"> Chatters </v-btn>
       <v-btn icon="mdi-menu" v-if="inChat && mdAndDown" @click="appStore.toggleDrawer()"> </v-btn>
     </v-app-bar-title>
-    <LangSelector></LangSelector>
+    <LangSelector v-if="authStore.isAuthenticated()"></LangSelector>
     <v-btn v-if="authStore.isAuthenticated()" varient="outlined" color="red" @click="logout()">logout</v-btn>
     <v-btn v-else-if="!isLoginPage" href="/login">login</v-btn>
   </v-app-bar>

@@ -1,4 +1,4 @@
-type Language = 'en' | 'nl' | 'de' | 'ar' | 'jp';
+import type { Language } from "@/api/v1"
 
 export type {
   Language

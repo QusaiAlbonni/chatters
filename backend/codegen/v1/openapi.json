@@ -5,7 +5,7 @@
     "description": "Test description",
     "version": "v1"
   },
-  "host": "localhost:8000",
+  "host": "127.0.0.1:8000",
   "schemes": [
     "http"
   ],
@@ -27,6 +27,55 @@
     }
   ],
   "paths": {
+    "/chat/languages/": {
+      "get": {
+        "operationId": "chat_languages_list",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Language"
+              }
+            }
+          }
+        },
+        "tags": [
+          "chat"
+        ]
+      },
+      "parameters": []
+    },
+    "/chat/languages/{id}/": {
+      "get": {
+        "operationId": "chat_languages_read",
+        "description": "",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/Language"
+            }
+          }
+        },
+        "tags": [
+          "chat"
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "description": "A unique integer value identifying this room.",
+          "required": true,
+          "type": "integer"
+        }
+      ]
+    },
     "/chat/rooms/": {
       "get": {
         "operationId": "chat_rooms_list",
@@ -47,31 +96,6 @@
           "chat"
         ]
       },
-      "post": {
-        "operationId": "chat_rooms_create",
-        "description": "",
-        "parameters": [
-          {
-            "name": "data",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Room"
-            }
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/Room"
-            }
-          }
-        },
-        "tags": [
-          "chat"
-        ]
-      },
       "parameters": []
     },
     "/chat/rooms/{id}/": {
@@ -85,69 +109,6 @@
             "schema": {
               "$ref": "#/definitions/Room"
             }
-          }
-        },
-        "tags": [
-          "chat"
-        ]
-      },
-      "put": {
-        "operationId": "chat_rooms_update",
-        "description": "",
-        "parameters": [
-          {
-            "name": "data",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Room"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/Room"
-            }
-          }
-        },
-        "tags": [
-          "chat"
-        ]
-      },
-      "patch": {
-        "operationId": "chat_rooms_partial_update",
-        "description": "",
-        "parameters": [
-          {
-            "name": "data",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/Room"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "schema": {
-              "$ref": "#/definitions/Room"
-            }
-          }
-        },
-        "tags": [
-          "chat"
-        ]
-      },
-      "delete": {
-        "operationId": "chat_rooms_delete",
-        "description": "",
-        "parameters": [],
-        "responses": {
-          "204": {
-            "description": ""
           }
         },
         "tags": [
@@ -442,7 +403,10 @@
           "200": {
             "description": "",
             "schema": {
-              "$ref": "#/definitions/User"
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/User"
+              }
             }
           }
         },
@@ -803,6 +767,32 @@
     }
   },
   "definitions": {
+    "Language": {
+      "required": [
+        "code",
+        "name"
+      ],
+      "type": "object",
+      "properties": {
+        "pk": {
+          "title": "ID",
+          "type": "integer",
+          "readOnly": true
+        },
+        "code": {
+          "title": "The id of the Language",
+          "type": "string",
+          "maxLength": 15,
+          "minLength": 1
+        },
+        "name": {
+          "title": "The verbose name of the Language",
+          "type": "string",
+          "maxLength": 127,
+          "minLength": 1
+        }
+      }
+    },
     "Room": {
       "required": [
         "name"
@@ -854,7 +844,8 @@
     },
     "Message": {
       "required": [
-        "content"
+        "content",
+        "language"
       ],
       "type": "object",
       "properties": {
@@ -868,6 +859,16 @@
           "type": "string",
           "maxLength": 4096,
           "minLength": 1
+        },
+        "language": {
+          "title": "Content Language",
+          "type": "string",
+          "maxLength": 31,
+          "minLength": 1
+        },
+        "translations": {
+          "title": "Translations",
+          "type": "object"
         },
         "user": {
           "$ref": "#/definitions/users"
@@ -935,6 +936,13 @@
           "title": "Password",
           "type": "string",
           "minLength": 1
+        },
+        "avatar": {
+          "title": "Avatar",
+          "type": "string",
+          "readOnly": true,
+          "x-nullable": true,
+          "format": "uri"
         }
       }
     },

@@ -50,10 +50,12 @@ import { useAuthStore } from '@/stores/auth';
 import { ref } from 'vue';
 import { useAppStore } from '@/stores/app';
 import { useRouter } from 'vue-router';
+import { useTransStore } from '@/stores/translation';
 
 const authStore = useAuthStore()
 const appStore = useAppStore()
 const router = useRouter()
+const transStore = useTransStore()
 
 const username = ref('')
 const password = ref('')
@@ -74,9 +76,11 @@ async function login() {
   try {
     enabledButton.value = false;
     await authStore.fetchAuthToken(username.value, password.value);
+    await transStore.loadLangs();
     router.push('/chat');
   }
   catch (error) {
+    console.log(error);
     appStore.errorSnackBar.message = "Incorrect credentials";
     appStore.errorSnackBar.visible = !appStore.errorSnackBar.visible;
   }

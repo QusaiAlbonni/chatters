@@ -2,23 +2,39 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import type { Language } from '@/types/translation';
+import { ChatApi } from '@/api/v1';
+import { useApiStore } from './api';
+
 export const useTransStore = defineStore('translation', () => {
-  const langs: Language[] = ['en', 'nl', 'de', 'ar', 'jp']
+  const langs: Ref<string[]> = ref([])
 
-  const currentLang: Language = localStorage.getItem('lang') as Language
+  const apiStore = useApiStore();
 
-  const lang: Ref<Language> = ref(currentLang || 'en');
+  const currentLang: string = localStorage.getItem('lang') as string
 
-  const switchLang = (language: Language) => {
+  const lang: Ref<string> = ref(currentLang || 'en');
+
+  const switchLang = (language: string) => {
     lang.value = language;
     localStorage.setItem('lang', language);
     window.location.reload();
   };
 
+  const loadLangs = async () => {
+    const languages: Language[] = await apiStore.getLangs();
+    const tempLangs: string[] = [];
+    for (let language of languages){
+      tempLangs.push(language.code);
+    }
+    langs.value = tempLangs;
+
+  }
+
   return {
     lang,
     langs,
-    switchLang
+    switchLang,
+    loadLangs
   }
 }
 )

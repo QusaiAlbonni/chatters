@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
-import { ChatApi, UsersApi, type Message, type Room, type User } from '@/api/v1/Api'
+import { ChatApi, UsersApi, type Language, type Message, type Room, type User } from '@/api/v1/Api'
 import axiosInstance from '@/axios'
+import { useTransStore } from "./translation";
 
 export const useApiStore =  defineStore('api', () => {
   const chatApi = new ChatApi(undefined, undefined, axiosInstance);
@@ -21,16 +22,20 @@ export const useApiStore =  defineStore('api', () => {
   };
 
   const editMessage = async (roomId: string, messageId: string, content: string): Promise<Message> => {
-    let response = await chatApi.chatRoomsMessagesPartialUpdate(roomId, parseInt(messageId), {content: content});
-
+    const transStore = useTransStore();
+    let response = await chatApi.chatRoomsMessagesPartialUpdate(roomId, parseInt(messageId), {content: content, language: transStore.lang});
     return response.data
   }
   const getUser = async () : Promise<User> => {
-    return (await userApi.usersMeRead()).data;
+    return (await userApi.usersMeRead()).data as User;
   };
 
   const getRoom = async (id: number) : Promise<Room> => {
     return (await chatApi.chatRoomsRead(id)).data
+  };
+
+  const getLangs = async () : Promise<Language[]> => {
+    return (await chatApi.chatLanguagesList()).data
   };
 
   return {
@@ -39,6 +44,7 @@ export const useApiStore =  defineStore('api', () => {
     getUser,
     getRoom,
     deleteMessage,
-    editMessage
+    editMessage,
+    getLangs
   };
 });

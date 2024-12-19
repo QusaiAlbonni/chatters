@@ -1,4 +1,4 @@
-from messaging.models import Message, Room
+from messaging.models import Message, Room, Langauge
 from .models import Message, Room
 from abc import ABC, abstractmethod
 
@@ -154,3 +154,11 @@ class AITranslationService(TranslationService):
         return response.get_text()
 
 
+class LanguageServiceBase(ABC):
+    @abstractmethod
+    async def get_language(self, code: str) -> Langauge:
+        ...
+
+class LanguageService(LanguageServiceBase):
+    async def get_language(self, code: str) -> Langauge:
+        return await Langauge.objects.aget(code= code)

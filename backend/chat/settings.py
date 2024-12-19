@@ -217,7 +217,14 @@ OPENAI_KEY= env("OPENAI_KEY")
 configure(openai_api_key=OPENAI_KEY, gemini_api_key=env('GEMINI_KEY'))
 
 
-SUPPORTED_LANGUAGES = ('en', 'nl', 'de', 'ar', 'jp', None)
+SUPPORTED_LANGUAGES = (
+    ('en', 'English'),
+    ('nl', 'Dutch'),
+    ('de', 'German'),
+    ('ar', 'Arabic'),
+    ('jp', 'Japanese'),
+    ('ru', 'Russian')
+    )
 
 
 sentry_sdk.init(

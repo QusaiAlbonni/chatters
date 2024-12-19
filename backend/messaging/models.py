@@ -29,3 +29,12 @@ class Message(models.Model):
 
     class Meta:
         ordering= ('created_at',)
+
+
+class Langauge(models.Model):
+    code= models.CharField(_("The id of the Language"), max_length=15, unique=True)
+    
+    name = models.CharField(_("The verbose name of the Language"), max_length=127)
+    
+    class Meta:
+        ordering = ('code', 'name')

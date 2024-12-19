@@ -4,13 +4,14 @@
         <v-btn
           color="primary"
           v-bind="props"
+          @click="loadLangsIfEmpty()"
         >
           {{ transStore.lang }}
         </v-btn>
       </template>
       <v-list>
         <v-list-item
-          v-for="(item, index) in items"
+          v-for="(item, index) in transStore.langs"
           :key="index"
           :value="item"
           @click="selectLang(item)"
@@ -23,13 +24,15 @@
 
 <script lang="ts" setup>
 import { useTransStore } from '@/stores/translation';
-import type { Language } from '@/types/translation';
 
 const transStore = useTransStore();
 
-const items = transStore.langs;
-
-function selectLang(lang: Language){
+function selectLang(lang: string){
   transStore.switchLang(lang)
+}
+async function loadLangsIfEmpty(){
+  if (transStore.langs.length == 0){
+    await transStore.loadLangs();
+  }
 }
 </script>

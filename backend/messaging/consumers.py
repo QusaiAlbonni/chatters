@@ -8,8 +8,16 @@ from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from users.models import User
 
-from .models import Room, Message
-from .services import AsyncMessagingService, AsyncMessagingAssembler, AITranslationService, TranslationService
+from .models import Room, Message, Langauge
+
+from .services import \
+    AsyncMessagingService, \
+    AsyncMessagingAssembler,\
+    AITranslationService,\
+    TranslationService,\
+    LanguageServiceBase,\
+    LanguageService
+    
 from .serializers import MessageSerializer
 from rest_framework.request import HttpRequest
 from urllib.parse import parse_qs
@@ -26,11 +34,20 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     user: AbstractUser
     storage_service: AsyncMessagingService
     translate_service: TranslationService
+    language_service: LanguageServiceBase
     
-    def __init__(self, messaging_service: AsyncMessagingService = AsyncMessagingAssembler(), translate_service: TranslationService = AITranslationService(), *args, **kwargs):
+    def __init__(
+        self,
+        messaging_service: AsyncMessagingService = AsyncMessagingAssembler(),
+        translate_service: TranslationService = AITranslationService(),
+        language_service: LanguageServiceBase = LanguageService(),
+        *args,
+        **kwargs
+    ):
         super().__init__(*args, **kwargs)
         self.storage_service = messaging_service
         self.translate_service= translate_service
+        self.language_service = language_service
         
     async def connect(self):
         self.room_name: str = self.scope["url_route"]["kwargs"].get('room_name', 'global_room')
@@ -40,8 +57,10 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         query_dict = parse_qs(query_string)
         self.language= query_dict.get('lang', None)[0]
         
-        if self.language not in langs:
-            raise DenyConnection("Unsoppurted Language")
+        try:
+            await self.language_service.get_language(self.language)
+        except Langauge.DoesNotExist:
+            raise DenyConnection("Language is not supported.")
         
         user : AbstractUser = self.scope['user']
         if user.is_anonymous:
