@@ -155,7 +155,7 @@ async function scrollDown() {
 }
 
 function initSocket() {
-  socket = ref(webSocketStore.createChatConnection(room.value?.name || "general"));
+  socket = ref(webSocketStore.createChatConnection((room.value?.pk || 1).toString()));
 }
 
 async function onConnectionSuccess() {

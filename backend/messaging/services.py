@@ -25,6 +25,10 @@ class MessagingService(ABC):
     def get_room_by_name(self, name: str) -> Room:
         ...
         
+    @abstractmethod
+    def get_room_by_id(self, id: int) -> Room:
+        ...
+        
         
 class AsyncMessagingService(ABC):
     @abstractmethod
@@ -38,6 +42,10 @@ class AsyncMessagingService(ABC):
     @abstractmethod
     async def get_room_by_name(self, name: str) -> Room:
         ...
+    
+    @abstractmethod
+    async def get_room_by_id(self, id: int) -> Room:
+        ...
 
 class AsyncMessagingAssembler(AsyncMessagingService):
     async def create_message(self, **kwargs) -> Message:
@@ -48,6 +56,9 @@ class AsyncMessagingAssembler(AsyncMessagingService):
 
     async def get_room_by_name(self, name: str) -> Room:
         return await Room.objects.aget(name=name)
+    
+    async def get_room_by_id(self, id: int) -> Room:
+        return await Room.objects.aget(pk=id)
     
 class TranslationService(ABC):
     @abstractmethod

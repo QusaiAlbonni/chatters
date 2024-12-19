@@ -50,8 +50,8 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
         self.language_service = language_service
         
     async def connect(self):
-        self.room_name: str = self.scope["url_route"]["kwargs"].get('room_name', 'global_room')
-        self.room_group_name = f"chat_{self.room_name}"
+        self.room_id: str = self.scope["url_route"]["kwargs"].get('room_id', 'global_room')
+        self.room_group_name = f"chat_{self.room_id}"
         
         query_string = self.scope.get("query_string", b"").decode()
         query_dict = parse_qs(query_string)
@@ -67,7 +67,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
             raise DenyConnection("Unauthenticated.")
         
         try:
-            self.room = await self.storage_service.get_room_by_name(self.room_name)
+            self.room = await self.storage_service.get_room_by_id(self.room_id)
         except Room.DoesNotExist:
             raise DenyConnection("Room not found.")
         
