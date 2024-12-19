@@ -10,7 +10,7 @@
           <v-list-item v-for="[index, message] of messages?.entries()" :key="message.pk" class="px-2">
             <v-col cols="12" :class="('d-flex px-0 ' + (message.isOwned(user?.id) ? 'justify-end' : 'justify-start'))"
               style="padding: 0px;">
-              <v-avatar :image="showMessage(message, index) ? message.user?.avatar : ''"
+              <v-avatar :image="showMessage(message, index) ? message.user?.avatar || defaultImage : ''"
                 :class="['mx-2', message.isOwned(user?.id) ? 'order-2' : 'order-1',]"></v-avatar>
 
               <v-card :color="message.isOwned(user?.id) ? 'light-blue-darken-3' : 'dark'"
@@ -80,6 +80,7 @@ import { useWebSocketStore } from '@/stores/websocket';
 import { useAppStore } from '@/stores/app';
 import { ExpandableMessage } from '@/types/message';
 import { useDisplay } from 'vuetify';
+import { RequiredError } from '@/api/v1/base';
 
 const route = useRoute();
 const apiStore = useApiStore();
@@ -107,6 +108,7 @@ const messages: Ref<ExpandableMessage[]> = ref([]);
 const errorMessage: Ref<string> = ref("An error have occured")
 const error: Ref<boolean> = ref(false)
 const messageContent: Ref<string> = ref("");
+const defaultImage = ref();
 
 let socket: Ref<WebSocket>;
 
@@ -208,6 +210,7 @@ async function initChat() {
     socket.value.onclose = onConnectionClose;
     socket.value.onmessage = onMessageReceived;
 
+    defaultImage.value = (await import('@/assets/logo.svg')).default;
 
   }
   catch (e: any) {
