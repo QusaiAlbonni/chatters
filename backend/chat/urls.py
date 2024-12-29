@@ -40,7 +40,7 @@ urlpatterns = [
     path('api/v1/chat/', include('messaging.urls')),
     path('api/v1/', include('djoser.urls')),
     path('api/v1/', include('djoser.urls.authtoken')),
-    path('api/v2/', include('messaging.v2.urls'))
+    path('api/v2/', include('messaging.v2.urls')),
 ]
 
 if settings.DEBUG:

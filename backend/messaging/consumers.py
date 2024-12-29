@@ -13,8 +13,9 @@ from .models import Room, Message, Langauge
 from .services import \
     AsyncMessagingService, \
     AsyncMessagingAssembler,\
-    AITranslationService,\
-    TranslationService,\
+    TranslationService
+    
+from translation.services import \
     LanguageServiceBase,\
     LanguageService
     
@@ -39,7 +40,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
     def __init__(
         self,
         messaging_service: AsyncMessagingService = AsyncMessagingAssembler(),
-        translate_service: TranslationService = AITranslationService(),
+        translate_service: TranslationService = TranslationService(),
         language_service: LanguageServiceBase = LanguageService(),
         *args,
         **kwargs

@@ -4,13 +4,17 @@ import { ref } from 'vue';
 import type { Language } from '@/types/translation';
 import { ChatApi } from '@/api/v1';
 import { useApiStore } from './api';
+import axiosInstance from '@/axios'
+
 
 export const useTransStore = defineStore('translation', () => {
   const langs: Ref<string[]> = ref([])
 
   const apiStore = useApiStore();
 
-  const currentLang: string = localStorage.getItem('lang') as string
+  const currentLang: string = localStorage.getItem('lang') as string;
+
+  axiosInstance.defaults.headers.common['Accept-Language'] = currentLang;
 
   const lang: Ref<string> = ref(currentLang || 'en');
 

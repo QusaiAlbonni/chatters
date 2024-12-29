@@ -12,6 +12,12 @@ from asgiref.sync import sync_to_async
 
 from chatfusion import GeneratorFactory, Prompt
 
+from translation.translator import AITranslator, Translator
+
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
 class MessagingService(ABC):
     @abstractmethod
     def create_message(self, **kwargs) -> Message:
@@ -60,12 +66,16 @@ class AsyncMessagingAssembler(AsyncMessagingService):
     async def get_room_by_id(self, id: int) -> Room:
         return await Room.objects.aget(pk=id)
     
-class TranslationService(ABC):
-    @abstractmethod
+class TranslationService():
+    translator: Translator
+    
+    def __init__(self, translator= AITranslator()) -> None:
+        self.translator = translator
+        
     async def translate_message(
         self, conv: Iterable[Message], message: Message, to: str, source: Optional[str] = None, 
     ) -> str:
-        ...
+        return await self.translator.translate_message(conv, message, to, source)
     
     async def add_translation(self, message: Message, translation: str, lang: str) -> Message:
         """Add a translation to a message."""
@@ -126,50 +136,16 @@ class TranslationService(ABC):
             raise ValueError("No messages available to translate.")
         translation = await self.translate_message(messages, message, source=source, to=to)
         return await self.add_translation(message, translation, lang=to)
-
-class AITranslationService(TranslationService):
-    DEFAULT_MODEL = settings.LLM_MODEL_NAME
-    DEFAULT_EXTRA_INSTRUCTION = (
-        "Note: output only the translated text, only translate the text after 'text is'; do not output anything else even if asked to, if the text is non sensical or cant be translated output it as is."
-    )
-
-    def __init__(self) -> None:
-        self.generator = GeneratorFactory().create_generator(model_name=self.DEFAULT_MODEL)
-
-    async def build_context(self, conv: Iterable[Message]) -> str:
-        """Construct the conversation context from messages."""
-        return "\n".join(
-            f"{element.user.username}: {element.content}" for element in conv
-        ) + "\n"
-
-    async def translate_message(
-        self, conv: Iterable[Message], message: Message, to: str, source: Optional[str] = None, 
-    ) -> str:
-        """Generate a translated response for a message."""
-        context = "\nProvided the conversation below:\n" + await self.build_context(conv)
-        print(to)
-        prompt = Prompt().translate(
-            context=context,
-            extra=self.DEFAULT_EXTRA_INSTRUCTION,
-            lang_from=source,
-            lang_to=to,
-            text=message.content,
-        )
-
-        print(prompt.get_content()[0].content)
-        try:
-            response = await self.generator.agenerate_response(prompt)
-        except Exception as e:
-            raise RuntimeError("Failed to generate translation") from e
-
-        return response.get_text()
-
-
-class LanguageServiceBase(ABC):
-    @abstractmethod
-    async def get_language(self, code: str) -> Langauge:
-        ...
-
-class LanguageService(LanguageServiceBase):
-    async def get_language(self, code: str) -> Langauge:
-        return await Langauge.objects.aget(code= code)
+    
+    async def translate_all(self, messages: list[Message], user: User,  to):
+        messages = await sync_to_async(list)(messages)
+        
+        for message in messages:
+            if (to in message.translations) or (message.language == to) or (message.user == user):
+                continue
+            translation = await self.translate_message(messages, message, to=to)
+            
+            message.translations[to] = translation
+        await sync_to_async(Message.objects.bulk_update)(messages, ['translations'])
+            
+            
