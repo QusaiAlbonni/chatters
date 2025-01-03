@@ -10,9 +10,9 @@ class LanguageMiddleware:
         self.language_service = language_service
     def __call__(self, request: HttpRequest) -> Any:
         raw_language = request.META.get('HTTP_ACCEPT_LANGUAGE', '')
-        accept_lang, unused  =  parse_accept_lang_header(raw_language)
+        accept_lang = parse_accept_lang_header(raw_language)
         if accept_lang:
-            accept_lang = accept_lang[0]
+            accept_lang, unused = accept_lang[0]
         else:
             accept_lang = 'en'
         try:
