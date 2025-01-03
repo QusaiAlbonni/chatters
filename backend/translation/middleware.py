@@ -16,7 +16,11 @@ class LanguageMiddleware:
         else:
             accept_lang = 'en'
         try:
-            language_code = self.language_service.sync_get_language(accept_lang.split('-')[0]).code
+            language = self.language_service.sync_get_language(accept_lang.split('-')[0])
+            if language:
+                language_code = language.code
+            else:
+                language_code = 'en'
         except Langauge.DoesNotExist as e:
             if raw_language != '':
                 print(accept_lang)
