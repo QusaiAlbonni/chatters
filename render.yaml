@@ -28,6 +28,6 @@ services:
 databases:
   - name: chatters-prod
     region: frankfurt
-    plan: basic-4gb
+    plan: basic-256mb
     databaseName: primary_chatters_db
     user: chatters_web
