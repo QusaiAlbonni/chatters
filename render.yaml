@@ -18,7 +18,6 @@ services:
   - type: web
     name: chatters-web
     runtime: static
-    plan: starter
     buildCommand: (cd frontend && npm install && npm run build-only)
     staticPublishPath: ./frontend/dist
     routes:
