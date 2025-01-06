@@ -60,7 +60,8 @@ INSTALLED_APPS = [
     'storages',
     
     #ChatIn
-    'messaging',    
+    'messaging', 
+    'messaging.audit',   
     'users',
     'translation',
 ]

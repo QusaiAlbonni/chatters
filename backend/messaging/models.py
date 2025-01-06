@@ -9,8 +9,13 @@ class Room(models.Model):
     
     created_at= models.DateTimeField(_("Created At"), auto_now=False, auto_now_add=True)
     modified_at = models.DateTimeField(_("Modified At"), auto_now=True, auto_now_add=False)
-
     
+    def __str__(self) -> str:
+        return self.name
+    
+    class Meta:
+        ordering = ('created_at',)
+
 def get_default_room() -> Room:
     return Room.objects.get_or_create(name='global')[0].id
 
@@ -26,6 +31,9 @@ class Message(models.Model):
     
     created_at= models.DateTimeField(_("Created At"), auto_now=False, auto_now_add=True)
     modified_at = models.DateTimeField(_("Modified At"), auto_now=True, auto_now_add=False)
+    
+    def __str__(self) -> str:
+        return str(self.pk) + "-" + self.content[:100]
 
     class Meta:
         ordering= ('created_at',)

@@ -75,7 +75,8 @@ class TranslationService():
     async def translate_message(
         self, conv: Iterable[Message], message: Message, to: str, source: Optional[str] = None, 
     ) -> str:
-        return await self.translator.translate_message(conv, message, to, source)
+        response =  await self.translator.translate_message(conv, message, to, source)
+        return response
     
     async def add_translation(self, message: Message, translation: str, lang: str) -> Message:
         """Add a translation to a message."""
@@ -141,7 +142,7 @@ class TranslationService():
         messages = await sync_to_async(list)(messages)
         
         for message in messages:
-            if (to in message.translations) or (message.language == to) or (message.user == user):
+            if (to in message.translations) or (message.language == to) or ((message.user == user) and not user.is_staff):
                 continue
             translation = await self.translate_message(messages, message, to=to)
             

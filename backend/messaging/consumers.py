@@ -92,7 +92,7 @@ class ChatConsumer(AsyncJsonWebsocketConsumer):
 
     async def chat_message(self, event):
         message = event["message"]
-        if (message['language'] != self.language) and self.language and not (message['user']['id'] == self.user.id):
+        if (message['language'] != self.language) and self.language and not ((message['user']['id'] == self.user.id) and not self.user.is_staff):
             print(message)
             user = await User.objects.aget(pk=message['user']['id'])
             message_obj = Message(
