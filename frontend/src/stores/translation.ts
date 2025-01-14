@@ -14,6 +14,8 @@ export const useTransStore = defineStore('translation', () => {
 
   const currentLang: string = localStorage.getItem('lang') as string;
 
+  const disableTranslation: Ref<boolean> = ref(false)
+
   axiosInstance.defaults.headers.common['Accept-Language'] = currentLang;
 
   const lang: Ref<string> = ref(currentLang || 'en');
@@ -23,6 +25,10 @@ export const useTransStore = defineStore('translation', () => {
     localStorage.setItem('lang', language);
     window.location.reload();
   };
+
+  const toggleTranslation = () =>{
+    disableTranslation.value = !disableTranslation.value;
+  }
 
   const loadLangs = async () => {
     const languages: Language[] = await apiStore.getLangs();
@@ -38,7 +44,9 @@ export const useTransStore = defineStore('translation', () => {
     lang,
     langs,
     switchLang,
-    loadLangs
+    loadLangs,
+    disableTranslation,
+    toggleTranslation
   }
 }
 )

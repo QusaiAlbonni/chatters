@@ -23,7 +23,7 @@ export class ExpandableMessage implements Message {
       const transStore= useTransStore();
       const lang = transStore.lang
       let content = this.content;
-      if (lang in this.translations){
+      if ((lang in this.translations) && !transStore.disableTranslation){
         content = this.translations[lang];
       }
       return content

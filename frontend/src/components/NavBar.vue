@@ -6,6 +6,10 @@
       <v-btn icon="mdi-menu" v-if="inChat && mdAndDown" @click="appStore.toggleDrawer()"> </v-btn>
     </v-app-bar-title>
     <LangSelector v-if="authStore.isAuthenticated()"></LangSelector>
+    <v-btn @click="transStore.toggleTranslation()">
+      <p v-if="transStore.disableTranslation" style="color: red;">off</p>
+      <p v-else>on</p>
+    </v-btn>
     <v-btn v-if="authStore.isAuthenticated()" varient="outlined" color="red" @click="logout()">logout</v-btn>
     <v-btn v-else-if="!isLoginPage" href="/login">login</v-btn>
   </v-app-bar>
@@ -23,6 +27,7 @@ import { useAppStore } from '@/stores/app';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useDisplay } from 'vuetify'
+import { useTransStore } from '@/stores/translation';
 
 const { mobile, mdAndDown, smAndDown } = useDisplay()
 
@@ -32,6 +37,7 @@ const snackbar = appStore.errorSnackBar
 
 const authStore = useAuthStore()
 const route = useRoute()
+const transStore = useTransStore()
 const isLoginPage = route.name === '/login';
 
 
